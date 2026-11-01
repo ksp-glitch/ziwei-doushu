@@ -31,7 +31,9 @@ import { SITE_URL } from '@/lib/site';
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  return [{ star: 'ziwei', topic: 'overview' }];
+  const routes = getAllKnowledgeRoutes();
+  // URL 用拼音 slug 替代中文，避开 Vercel/CDN 中文路由边界问题
+  return routes.map(r => ({ star: r.slug, topic: r.topic }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ star: string; topic: string }> }) {
@@ -274,6 +276,43 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
 
       {/* 页脚 */}
       <footer style={{ borderTop: '1px solid rgba(184,146,42,0.15)', padding: '20px 24px', textAlign: 'center', fontSize: '11px', color: 'var(--tx-3)', letterSpacing: '0.1em' }}>
+        <div style={{ marginBottom: '6px' }}>紫微研究 · 基于倪海厦正宗体系 · 仅供学习参考</div>
+        <div style={{ opacity: 0.85 }}>本平台不构成任何医疗、投资、法律或重大决策建议</div>
+      </footer>
+    </div>
+  );
+}
+
+function Section({ title, children, gradient, minimal }: { title: string; children: React.ReactNode; gradient?: boolean; minimal?: boolean }) {
+  return (
+    <section style={{ marginBottom: minimal ? '24px' : '32px' }}>
+      <h2 style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+        fontSize: '13px',
+        color: 'var(--ac)',
+        fontWeight: 600,
+        letterSpacing: '0.2em',
+        marginBottom: '12px',
+      }}>
+        <span style={{ width: '4px', height: '14px', background: 'var(--ac)', borderRadius: '2px' }} />
+        {title}
+      </h2>
+      <div style={{
+        background: gradient
+          ? 'linear-gradient(135deg, rgba(212,169,72,0.12) 0%, rgba(184,146,42,0.04) 100%)'
+          : 'white',
+        border: '1px solid rgba(184,146,42,0.15)',
+        borderRadius: '10px',
+        padding: minimal ? '14px 18px' : '20px 22px',
+      }}>
+        {children}
+      </div>
+    </section>
+  );
+}
+-tx-3)', letterSpacing: '0.1em' }}>
         <div style={{ marginBottom: '6px' }}>紫微研究 · 基于倪海厦正宗体系 · 仅供学习参考</div>
         <div style={{ opacity: 0.85 }}>本平台不构成任何医疗、投资、法律或重大决策建议</div>
       </footer>
